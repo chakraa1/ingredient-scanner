@@ -13,20 +13,36 @@ const productNameInput = document.getElementById('productName');
 const productImageInput = document.getElementById('productImage');
 const imagePreview   = document.getElementById('imagePreview');
 const previewImg     = document.getElementById('previewImg');
+const removeImgBtn   = document.getElementById('removeImgBtn');
+const uploadLabel    = document.getElementById('uploadLabel');
 
 let productName = '';
 let productImage = null;
+
+function clearImage() {
+  productImage = null;
+  productImageInput.value = '';
+  imagePreview.style.display = 'none';
+  if (uploadLabel) { uploadLabel.textContent = 'Upload ingredient label image…'; uploadLabel.classList.remove('has-file'); }
+  updateAnalyzeButtonState();
+}
+
+// ── Remove Image ─────────────────────────────────────────────────────────────
+if (removeImgBtn) {
+  removeImgBtn.addEventListener('click', clearImage);
+}
 
 // ── Image Upload ─────────────────────────────────────────────────────────────
 productImageInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (file) {
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+    if (file.size > 5 * 1024 * 1024) {
       showError('Image file size must be less than 5MB.');
       productImageInput.value = '';
       return;
     }
     productImage = file;
+    if (uploadLabel) { uploadLabel.textContent = file.name; uploadLabel.classList.add('has-file'); }
     const reader = new FileReader();
     reader.onload = (e) => {
       previewImg.src = e.target.result;
@@ -34,8 +50,7 @@ productImageInput.addEventListener('change', (e) => {
     };
     reader.readAsDataURL(file);
   } else {
-    productImage = null;
-    imagePreview.style.display = 'none';
+    clearImage();
   }
   updateAnalyzeButtonState();
 });
@@ -55,6 +70,10 @@ if (productNameInput) {
   productNameInput.addEventListener('input', (e) => {
     productName = e.target.value.trim();
     updateAnalyzeButtonState();
+  });
+
+  productNameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !analyzeBtn.disabled) analyzeBtn.click();
   });
 }
 
@@ -292,10 +311,8 @@ scanAgainBtn.addEventListener('click', () => {
   resultsSection.style.display = 'none';
   uploadSection.style.display = 'flex';
   productName = '';
-  productImage = null;
   if (productNameInput) productNameInput.value = '';
-  if (productImageInput) productImageInput.value = '';
-  if (imagePreview) imagePreview.style.display = 'none';
+  clearImage();
   updateAnalyzeButtonState();
   document.querySelectorAll('.filter-btn').forEach((btn, i) => {
     btn.classList.toggle('active', i === 0);
