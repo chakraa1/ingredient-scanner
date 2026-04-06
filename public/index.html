@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeBasket — AI Ingredient Safety Scanner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- BRAND NAME SEARCH CARD -->
+    <section class="upload-section" id="uploadSection">
+      <div class="upload-card" id="uploadCard">
+        <div class="brand-row">
+          <div class="upload-icon">🛡️</div>
+          <div>
+            <div class="search-brand">SafeBasket</div>
+            <p class="search-tagline">AI-powered ingredient safety analysis for food packaged products</p>
+          </div>
+        </div>
+
+        <h2>Find Food Safety Risks Instantly</h2>
+        <p class="intro-text">Search packaged products by name or upload a photo of the label. SafeBasket analyzes ingredients and flags safety concerns quickly.</p>
+
+        <div class="search-grid">
+          <div class="search-block">
+            <div class="section-label">Search Product / Brand</div>
+            <div class="product-name-input">
+              <input type="text" id="productName" placeholder="e.g., Kellogg's Frosted Flakes, Colgate, Neutrogena Hydro Boost" />
+            </div>
+            <p class="input-hint">Type the product or brand name and click Analyze Safety.</p>
+          </div>
+
+          <div class="upload-block">
+            <div class="section-label">Upload Product Image</div>
+            <div class="image-upload-input">
+              <input type="file" id="productImage" accept="image/*" />
+            </div>
+            <div class="image-preview" id="imagePreview" style="display:none">
+              <img id="previewImg" src="" alt="Product preview" />
+            </div>
+            <p class="input-hint">Upload a clear photo of the packaged product or ingredient label.</p>
+          </div>
+        </div>
+
+        <button class="btn btn-analyze" id="analyzeBtn" disabled title="Enter a product name or upload an image to enable">
+          <span class="btn-icon">🧬</span>
+          <span class="btn-text">Analyze Safety</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- LOADING STATE -->
+    <section class="loading-section" id="loadingSection" style="display:none">
+      <div class="loading-card">
+        <div class="spinner"></div>
+        <h3>Analyzing Product Safety...</h3>
+        <p id="loadingMessage">Using product name to evaluate safety...</p>
+        <div class="loading-steps">
+          <div class="step active" id="step1">🔎 Reviewing product name</div>
+          <div class="step" id="step2">⚗️ Inferring likely ingredients</div>
+          <div class="step" id="step3">📚 Checking safety profiles</div>
+          <div class="step" id="step4">📊 Generating report</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS SECTION -->
+    <section class="results-section" id="resultsSection" style="display:none">
+
+      <!-- Summary Banner -->
+      <div class="results-header">
+        <button class="btn btn-back" id="scanAgainBtn">← Scan Another</button>
+        <h2 id="productType">Product Analysis</h2>
+      </div>
+
+      <!-- Risk Overview Cards -->
+      <div class="risk-overview" id="riskOverview"></div>
+
+      <!-- Summary Box -->
+      <div class="summary-box" id="summaryBox"></div>
+
+      <!-- Results Table -->
+      <div class="table-container">
+        <div class="table-header">
+          <h3>Ingredient Breakdown</h3>
+          <div class="table-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="high">High Risk</button>
+            <button class="filter-btn" data-filter="medium">Medium Risk</button>
+            <button class="filter-btn" data-filter="low">Low Risk</button>
+            <button class="filter-btn" data-filter="safe">Safe</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table id="ingredientsTable">
+            <thead>
+              <tr>
+                <th>Ingredient</th>
+                <th>Risk Level</th>
+                <th>Categories</th>
+                <th>IARC Class</th>
+                <th>Health Concerns</th>
+                <th>Regulatory Status</th>
+                <th>Safer Alternative</th>
+              </tr>
+            </thead>
+            <tbody id="ingredientsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recommendation -->
+      <div class="recommendation-box" id="recommendationBox"></div>
+
+      <!-- Raw Extracted Text -->
+      <details class="raw-text-details">
+        <summary>View Extracted Ingredient Text</summary>
+        <div id="rawIngredientsText" class="raw-text"></div>
+      </details>
+
+    </section>
+
+    <!-- ERROR STATE -->
+    <div class="error-toast" id="errorToast" style="display:none">
+      <span class="error-icon">⚠️</span>
+      <span id="errorMessage"></span>
+      <button id="closeError">✕</button>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>Powered by <strong>Claude AI (claude-opus-4-6)</strong> — For informational purposes only. Always consult a healthcare professional.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
