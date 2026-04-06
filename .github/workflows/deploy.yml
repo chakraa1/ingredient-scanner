@@ -1,4 +1,4 @@
-name: CI / GitHub + Lovable
+name: CI / Deploy to Render
 
 on:
   push:
@@ -33,23 +33,12 @@ jobs:
           fi
 
   deploy:
-    name: Deploy to Lovable
+    name: Deploy to Render
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Deploy notice
+      - name: Trigger Render deploy
         run: |
-          echo "This repository is ready to deploy to Lovable."
-          echo "Connect github.com/chakraa1/ingredient-scanner to Lovable and configure secrets there."
+          curl -s -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" | \
+          grep -o '"id":"[^"]*"' | head -1 || echo "Deploy triggered"
